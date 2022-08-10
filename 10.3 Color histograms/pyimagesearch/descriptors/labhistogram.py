@@ -17,7 +17,7 @@ class LabHistogram:
 
     def describe(self, image, mask=None):
         # By default OpenCV works with BGR ordering
-        lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+        lab = cv2.cvtColor(image, cv2.COLOR_BGR2Lab)
         # See: https://cvexplained.wordpress.com/2020/06/07/histograms/
         hist = cv2.calcHist([lab], [0, 1, 2], mask, self.bins,
                             [0, 256, 0, 256, 0, 256])
