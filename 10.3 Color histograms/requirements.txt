@@ -1,3 +1,8 @@
 imutils==0.5.4
+joblib==1.1.0
 numpy==1.23.1
 opencv-python==4.6.0.66
+scikit-learn==1.1.2
+scipy==1.9.0
+sklearn==0.0
+threadpoolctl==3.1.0
