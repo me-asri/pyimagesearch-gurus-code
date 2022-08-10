@@ -18,11 +18,29 @@ for imagePath in imagePaths:
     # Extract mean and standard deviation from each channel of RGB image
     # then update the index dict
     means, stds = cv2.meanStdDev(image)
-    print(means)
-    print(stds)
     # concatenate() basically joins a sequence of arrays
     # flatten() "collapses" a multi dimensional array into one dimension
     # see: https://www.w3resource.com/numpy/manipulation/index.php
-    print(np.concatenate([means, stds]).flatten())
     features = np.concatenate([means, stds]).flatten()
     index[filename] = features
+
+# Query image for comparison
+query = cv2.imread(imagePaths[0])
+cv2.imshow(f"Query ({imagePaths[0]}", query)
+
+keys = sorted(index.keys())
+for i, k in enumerate(keys):
+    # Ignore first image
+    if k == "trex_01.png":
+        continue
+
+    # Load current image and calculate Euclidean distance between current and query image
+    image = cv2.imread(imagePaths[i])
+    d = dist.euclidean(index["trex_01.png"], index[k])
+
+    cv2.putText(image, "%.2f" % (d), (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
+    cv2.imshow(k, image)
+
+# Wait for key press indefinitely
+cv2.waitKey(0)
