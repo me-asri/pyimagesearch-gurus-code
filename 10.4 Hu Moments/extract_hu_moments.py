@@ -22,6 +22,10 @@ cv2.waitKey(0)
 #   Contours outline the shape of an object. Contours are *closed* curves
 #   You may obtain contours by connecting the edges to obtain a closed curve
 
+# To find contours we need a binary image of silhouettes
+# To generate such image is called *thresholding*
+# In this example we are already given silhouettes so no need for thresholding
+
 # + findContours is *destructive* to the input image so pass a copy
 # + Modes:
 # RETR_EXTERNAL : Retrieves only the outer contours.
