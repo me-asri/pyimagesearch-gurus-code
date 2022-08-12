@@ -12,6 +12,8 @@ def describe_shapes(image: cv2.Mat) -> np.array:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Apply Gaussian blur to get rid of noise
     # See: https://cvexplained.wordpress.com/2020/05/26/smoothing-and-blurring/
+    # Increasing the kernel size of the blur will intensify the blur effect
+    # sigma variables define the smoothness
     blurred = cv2.GaussianBlur(gray, (13, 13), 0)
     # cv2.threshold returns a tuple of 2 values
     # - the threshold value
