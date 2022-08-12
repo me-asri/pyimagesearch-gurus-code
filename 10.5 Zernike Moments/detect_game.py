@@ -3,6 +3,7 @@ from scipy.spatial import distance as dist
 import numpy as np
 import mahotas
 import cv2
+import imutils
 
 
 def describe_shapes(image: cv2.Mat) -> np.array:
@@ -30,8 +31,8 @@ def describe_shapes(image: cv2.Mat) -> np.array:
     # What's up with erode and dilate?
     # Erosion shrinks shapes, it's mostly used to seperate parts of an object
     # Dilation expands shapes, it's mostly used to join seperate parts of an object
-    # - Doing dilation after erosion gets rid of the white spots
-    # - Doing erosion after dilation (this case) gets rid of the black spots (closing gaps)
+    # - Doing erosion followed by dilation gets rid of the white spots
+    # - Doing dilation followd by erosion (this case) gets rid of the black spots (closing gaps)
     # * Morphological operations are only done on binary images
     # See: https://cvexplained.wordpress.com/2020/05/18/erosion/
     #      https://cvexplained.wordpress.com/2020/05/18/dilation/
@@ -43,6 +44,34 @@ def describe_shapes(image: cv2.Mat) -> np.array:
     thresh = cv2.dilate(thresh, None, iterations=4)
     thresh = cv2.erode(thresh, None, iterations=2)
 
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
 
-distractor = cv2.imread('distractor.jpg')
+    for c in cnts:
+        # Create empty mask for contour and draw it
+        # What's 'shape'?
+        # - Basically it's a tuple containing the matrix dimensions
+        # - For images it's usually the resolution and channels (e.g. (200, 100, 3))
+        # So why [:2]? Basically we only care about the resolution not color channels
+        # Our mask is just a greyscale image
+        mask = np.zeros(image.shape[:2], dtype='uint8')
+        # Draw contour
+        # - Thickness of -1 means filled shape
+        cv2.drawContours(mask, [c], 0, 255, -1)
+
+        (x, y, w, h) = cv2.boundingRect(c)
+        roi = mask[y:(y + h), x:(x + w)]
+
+        # We could resize the ROI and use a static radius
+        #   However this can break the aspect ratio and prevent us from quantifying size
+        # - minEnclosingCircle returns a tuple ((x, y), radius)
+        # - degree should be chosen case by case
+        features = mahotas.features.zernike_moments(
+            roi, cv2.minEnclosingCircle(c)[1], degree=8)
+        shapeFeatures.append(features)
+
+    return (cnts, shapeFeatures)
+
+
+distractor = cv2.imread('reference.jpg')
 describe_shapes(distractor)
