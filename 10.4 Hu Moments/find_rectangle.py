@@ -64,6 +64,7 @@ D = pairwise_distances(data).sum(axis=1)
 # argmax() returns the index of the element with largest value
 # The row with the largest distance is the outlier
 i = np.argmax(D)
+print(D)
 
 image = cv2.imread(imagePaths[i])
 print(f'Found square: {imagePaths[i]}')
