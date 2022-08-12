@@ -51,7 +51,7 @@ def describe_shapes(image: cv2.Mat) -> np.array:
         # Create empty mask for contour and draw it
         # What's 'shape'?
         # - Basically it's a tuple containing the matrix dimensions
-        # - For images it's usually the resolution and channels (e.g. (200, 100, 3))
+        # - For images it's usually the resolution and channels (e.g. (200 (height), 100 (width), 3 (channel)))
         # So why [:2]? Basically we only care about the resolution not color channels
         # Our mask is just a greyscale image
         mask = np.zeros(image.shape[:2], dtype='uint8')
