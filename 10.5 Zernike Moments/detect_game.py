@@ -31,8 +31,8 @@ def describe_shapes(image: cv2.Mat) -> np.array:
     # What's up with erode and dilate?
     # Erosion shrinks shapes, it's mostly used to seperate parts of an object
     # Dilation expands shapes, it's mostly used to join seperate parts of an object
-    # - Doing erosion followed by dilation gets rid of the white spots
-    # - Doing dilation followd by erosion (this case) gets rid of the black spots (closing gaps)
+    # - Doing erosion followed by dilation gets rid of the white spots (Opening)
+    # - Doing dilation followd by erosion (this case) gets rid of the black spots (Closing)
     # * Morphological operations are only done on binary images
     # See: https://cvexplained.wordpress.com/2020/05/18/erosion/
     #      https://cvexplained.wordpress.com/2020/05/18/dilation/
@@ -73,5 +73,42 @@ def describe_shapes(image: cv2.Mat) -> np.array:
     return (cnts, shapeFeatures)
 
 
-distractor = cv2.imread('reference.jpg')
-describe_shapes(distractor)
+refImage = cv2.imread('pokemon_red.jpg')
+(_, gameFeatures) = describe_shapes(refImage)
+
+shapesImage = cv2.imread('shapes.jpg')
+(cnts, shapeFeatures) = describe_shapes(shapesImage)
+
+# Find Euclidean distances between the video game features
+# and all the other shapes in the second image
+D = dist.cdist(gameFeatures, shapeFeatures)
+# Get the index of lowest value element
+i = np.argmin(D)
+
+for (j, c) in enumerate(cnts):
+    # Get minimum area *rotated* rectangle encompassing contour
+    # - Unlike boundingRect, minAreaRect permits rotating the rectanble
+    # See: https://theailearner.com/tag/cv2-minarearect/
+    box = cv2.minAreaRect(c)  # Returns (center(x, y), (width, height), angle)
+    # To draw the box we need four corners
+    if imutils.is_cv2():
+        points = cv2.BoxPoints(box)
+    else:
+        points = cv2.boxPoints(box)
+    # Before drawing we need to cast 4 cordinates to integer
+    points = np.int0(points)
+
+    if i == j:
+        color = (0, 255, 0)  # Green
+
+        (x, y, w, h) = cv2.boundingRect(c)
+        cv2.putText(shapesImage, 'Found!', (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 3)
+    else:
+        color = (0, 0, 255)  # Red
+
+    cv2.drawContours(shapesImage, [points], 0, color, 2)
+
+cv2.imshow('Input image', refImage)
+cv2.imshow('Detected shapes', shapesImage)
+cv2.waitKey(0)
