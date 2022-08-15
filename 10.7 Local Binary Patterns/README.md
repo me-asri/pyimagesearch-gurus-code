@@ -20,5 +20,25 @@
 * If we took all the LBP codes and constructed a histogram of them we would lose all spatial information similar to constructing a color histogram.
 * But if we divide our image into blocks, extract LBPs for each block, and concatenate them together we're able to create a descriptor that encodes spatial information.
 * Spatial encoding step is not necessary but for some tasks such as face recognition it's crucial.
+## Colors
+* LBP does not account for colors
+* A few ways we can extend LBP to recognize colors:
+  * Ranking the images first on texture, then re-ranking on color
+  * Fusing both color and texture into single feature vector
+  * Performing a search on both color and texture independently, and then merging the results together
+## Choosing parameters
+* Radius and point count has effect on the dimensionality of the feature vector and computational efficiency
+* When using the `uniform` method the feature vector size will remain 25-d but computation times will increase
+* The larger the number of points and radius, the slower extraction will be
+* The author recommends starting off with _p=8_ and _r=1.0_ up to _p=24_ and _r=3.0_ then increasing the _radius_ to see if the accuracy improves
+* The author also recommends using rotation invariant LBPs as they have substantially smaller feature vector size and are easier to compute a histogram for
+## Pros & Cons
+### Pros
+* The original implementation of LBP is not rotation invariant however some extensions to it are (such as the uniform method in scikit package)
+* Very good at characterizing the texture of an image
+* Useful in face recognition
+### Cons
+* Can easily lead to large feature vectors if not careful
+* Computationally prohibitive as _p_ and _r_ increase
 ## Sources
 * [PyImageSearch](https://pyimagesearch.com/2015/12/07/local-binary-patterns-with-python-opencv/)
