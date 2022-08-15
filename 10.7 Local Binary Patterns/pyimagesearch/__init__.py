@@ -1,1 +1,1 @@
- 
+from pyimagesearch.descriptors.localbinarypatterns import LocalBinaryPatterns as LocalBinaryPatterns
