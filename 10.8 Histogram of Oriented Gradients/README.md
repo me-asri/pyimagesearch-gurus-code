@@ -58,3 +58,19 @@
 * For each of the cells in the current block we concatenate their corresponding gradient histograms. Followed by either `L1` or `L2` normalizing the entire concatenated feature vector.
 * Performing this type of normalization implies that each of the cells will be represented in the final feature vector multiple times but normalized by a different value.
 * After all blocks are normalized we take the resulting histograms, concatenate them, and treat them as our final feature vector.
+## Suggestions
+* While HOG descriptors are powerful, choosing the correct parameters can be a tad tedious.
+  * It's recommended to use `orientations=9`, `pixels_per_cell=(4, 4)` and `cells_per_block=(2, 2)` as starting point.
+* It's important to resize the images to a reasonable size
+
+## Pros and Cons
+### Pros
+* Very powerful descriptor
+* Excellent at representing local appearance
+* Very accurate for object classification
+* Useful for representing structual objects that don't have substantial variation in form
+### Cons
+* Can result in a very large feature vector
+* Often non-trivial to tune the parameters
+* Not the slowest but not the fastest
+* If the object to be described exhibits substantial structural variation (i.e. the rotation/orientation of the object is consistently different), then the standard vanilla implementation of HOG will not perform well
