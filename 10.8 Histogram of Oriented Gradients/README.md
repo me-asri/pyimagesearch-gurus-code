@@ -18,3 +18,18 @@
 3. Obtaining weighted votes in spatial and orientation cells
 4. Contrast normalizing overlapping spatial cells
 5. Collecting all HOGs to form the final feature vector
+### Step 1: Normalizing the image
+* The normalization step is optional, but in some cases this step can improve performance of the HOG descriptor.
+* There are three main normalization methods we can consider:
+  1. Gamma/power law normalization
+  2. Square-root normalization
+  3. Variance normalization
+* In most cases it's best to start either with **no normalization** or **square-root normalization**.
+  * Variance normalization is also worth considering but in most cases it'll perform similar to square-root normalization.
+### Step 2: Gradient computation
+* We can apply a convolution to obtain the gradient images:
+  * `Gx = I * Dx`
+  * `Gy = I * Dy`
+* Where `I` is the _image_ and `Dx` is our filter in the _x_ direction and `Dy` is our filter in the _y_ direction.
+* Now that we have the gradient images we can compute the final gradient magnitude representation of the image: `|G| = √(Gx^2 + Gy^2)`
+* Finally the orientation of the gradient for each pixel in the input image can be computed by: `θ = arctan2(Gy / Gx)`
