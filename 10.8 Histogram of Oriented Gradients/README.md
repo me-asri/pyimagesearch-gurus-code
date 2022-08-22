@@ -19,7 +19,7 @@
 4. Contrast normalizing overlapping spatial cells
 5. Collecting all HOGs to form the final feature vector
 ### Step 1: Normalizing the image
-* The normalization step is optional, but in some cases this step can improve performance of the HOG descriptor.
+* The normalization step is **optional**, but in some cases this step can improve performance of the HOG descriptor.
 * There are three main normalization methods we can consider:
   1. Gamma/power law normalization
   2. Square-root normalization
@@ -36,8 +36,17 @@
 ### Step 3: Weighted votes in each cell
 * A *cell* is a rectangular region defined by the number of pixels that belong in each cell.
   * For example if we had a 128x128 image and defined `pixels_per_cell` as 4x4, we would have 32x32 = 1024 cells.
-* Now, for each of the cells in the image, we need to construct  HOG using our gradient magnitude `|G|` and orientation `θ`.
+* Now, for each of the cells in the image, we need to construct HOG using our gradient magnitude `|G|` and orientation `θ`.
 * The number of _orientations_ control the number of _bins_ in the resulting histogram.
 * The gradient angle is either within the range `[0, 180]` (unsigned) or `[0, 360]` (signed)
   * It's preferable to use gradients in the range `[0, 180]` with _orientations_ somewhere in the range `[9, 12]`. But depending on your application using signed gradients over unsigned gradients can improve accuracy.
 * Finally, each pixel contributes a *weighted vote* to the histogram - **_The weight of the vote is simply the gradient magnitude |G| at the given pixel._**
+* We could collect and concatenate each of these histograms to form our final feature vector. But it's beneficial to apply block normalization.
+### Step 4: Contrast normalization over blocks
+* To account for changes in *illumination* and *contrast*, we can normalize the gradient values *locally*.
+  * This requires grouping the *cells* into larger *blocks*. It's common for these blocks to *overlap*, **_meaning that each cell contributes to the final feature vector more than once._**
+* The number of blocks are rectangular however our units are no longer pixels - they are cells.
+* Using either 2x2 or 3x3 `cells_per_block` obtains reasonable accuracy in most cases.
+* For each of the cells in the current block we concatenate their corresponding gradient histograms. Followed by either `L1` or `L2` normalizing the entire concatenated feature vector.
+* Performing this type of normalization implies that each of the cells will be represented in the final feature vector multiple times but normalized by a different value.
+* After all blocks are normalized we take the resulting histograms, concatenate them, and treat them as our final feature vector.
