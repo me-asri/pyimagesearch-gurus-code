@@ -54,7 +54,7 @@ for testImage in testImages:
     features = mahotas.features.haralick(gray).mean(axis=0)
 
     # Returns an array containing class label for each sample
-    # - As we pass a single sample we just need the first element since the [0]
+    # - As we pass a single sample we just need the first element hence the [0]
     pred = model.predict(features.reshape(1, -1))[0]
 
     # What's up with 'reshape(1, -1)'?
