@@ -6,12 +6,19 @@
 ### Parameters
 * The most important parameters for the HOG descriptors are the *orientations*, *pixels_per_cell* and *cells_per_block*.
   * These parameters control the dimensionality of the resulting feature vector.
+* Parameters should be obtained by experimentation and examining the accuracy of the classifier.
 ### Cells
 * Implementing HOG descriptor requires dividing the image into small connected regions called *cells* and then for each cell, computing a HOG for the pixels withing each cell. We can then accumulate these histograms accross multiple cells to form our feature vector.
 ### Block Normalization
 * We can perform *block normalization* to improve performance.
 * To perform block normalization we take groups of overlapping cells, concatenate their histograms, calculate a normalizing value and the contrast normalize the histogram.
 * By normalizing over multiple overlapping blocks, the resulting descriptor is more robust to changes in illumination and shadowing.
+### Image Size
+* Images with different widths and heights result in **HOG feature vector of different sizes.**
+  * When extracting HOG features from a dataset of images you'll want to define a *canonical, well known size* that each image will resized to.
+  * This means throwing away the aspect ratio which we *usually* want to avoid but in this case we're happy to do this because:
+    1. It ensures that each image in our dataset is described in a consistent manner
+    2. Each feature vector is of the same dimensionality
 ## Stages of HOG Descriptor
 1. Normalizing the image
 2. Computing gradients in both x and y directions
