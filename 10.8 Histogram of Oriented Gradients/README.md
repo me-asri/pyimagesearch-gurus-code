@@ -6,6 +6,7 @@
 ### Parameters
 * The most important parameters for the HOG descriptors are the *orientations*, *pixels_per_cell* and *cells_per_block*.
   * These parameters control the dimensionality of the resulting feature vector.
+  * Higher `pixels_per_cell` results in *coarse* representations and smaller values of `pixels_per_cell` will yield more *fine-grained* representations
 * Parameters should be obtained by experimentation and examining the accuracy of the classifier.
 ### Cells
 * Implementing HOG descriptor requires dividing the image into small connected regions called *cells* and then for each cell, computing a HOG for the pixels withing each cell. We can then accumulate these histograms accross multiple cells to form our feature vector.
