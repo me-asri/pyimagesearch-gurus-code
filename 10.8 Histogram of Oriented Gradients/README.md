@@ -33,3 +33,11 @@
 * Where `I` is the _image_ and `Dx` is our filter in the _x_ direction and `Dy` is our filter in the _y_ direction.
 * Now that we have the gradient images we can compute the final gradient magnitude representation of the image: `|G| = √(Gx^2 + Gy^2)`
 * Finally the orientation of the gradient for each pixel in the input image can be computed by: `θ = arctan2(Gy / Gx)`
+### Step 3: Weighted votes in each cell
+* A *cell* is a rectangular region defined by the number of pixels that belong in each cell.
+  * For example if we had a 128x128 image and defined `pixels_per_cell` as 4x4, we would have 32x32 = 1024 cells.
+* Now, for each of the cells in the image, we need to construct  HOG using our gradient magnitude `|G|` and orientation `θ`.
+* The number of _orientations_ control the number of _bins_ in the resulting histogram.
+* The gradient angle is either within the range `[0, 180]` (unsigned) or `[0, 360]` (signed)
+  * It's preferable to use gradients in the range `[0, 180]` with _orientations_ somewhere in the range `[9, 12]`. But depending on your application using signed gradients over unsigned gradients can improve accuracy.
+* Finally, each pixel contributes a *weighted vote* to the histogram - **_The weight of the vote is simply the gradient magnitude |G| at the given pixel._**
